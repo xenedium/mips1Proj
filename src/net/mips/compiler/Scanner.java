@@ -113,93 +113,43 @@ public class Scanner {
             read_next = false;
         }
         else switch (this.carCour) {
-                case '+' -> {
-                    this.symbCour.setToken(Tokens.PLUS_TOKEN);
-                    this.symbCour.setNom("+");
-                }
-                case '-' -> {
-                    this.symbCour.setToken(Tokens.MOINS_TOKEN);
-                    this.symbCour.setNom("-");
-                }
-                case '*' -> {
-                    this.symbCour.setToken(Tokens.MUL_TOKEN);
-                    this.symbCour.setNom("*");
-                }
-                case '/' -> {
-                    this.symbCour.setToken(Tokens.DIV_TOKEN);
-                    this.symbCour.setNom("/");
-                }
+                case '+' -> this.symbCour = new Symboles(Tokens.PLUS_TOKEN, "+");
+                case '-' -> this.symbCour = new Symboles(Tokens.MOINS_TOKEN, "-");
+                case '*' -> this.symbCour = new Symboles(Tokens.MUL_TOKEN, "*");
+                case '/' -> this.symbCour = new Symboles(Tokens.DIV_TOKEN, "/");
                 case '<' -> {
                     this.lireCar();
-                    if (this.carCour == '=') {
-                        this.symbCour.setToken(Tokens.INFEG_TOKEN);
-                        this.symbCour.setNom("<=");
-                    }
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.INFEG_TOKEN, "<=");
                     else {
-                        this.symbCour.setToken(Tokens.INF_TOKEN);
-                        this.symbCour.setNom("<");
+                        this.symbCour = new Symboles(Tokens.INF_TOKEN, "<");
                         read_next = false;
                     }
                 }
                 case '>' -> {
                     this.lireCar();
-                    if (this.carCour == '=') {
-                        this.symbCour.setToken(Tokens.SUPEG_TOKEN);
-                        this.symbCour.setNom(">=");
-                    }
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.SUPEG_TOKEN, ">=");
                     else {
-                        this.symbCour.setToken(Tokens.SUP_TOKEN);
-                        this.symbCour.setNom(">");
+                        this.symbCour = new Symboles(Tokens.SUP_TOKEN, ">");
                         read_next = false;
                     }
                 }
                 case '=' -> this.symbCour = new Symboles(Tokens.EG_TOKEN, "=");
-                case ';' -> {
-                    this.symbCour.setToken(Tokens.PVIR_TOKEN);
-                    this.symbCour.setNom(";");
-                }
-                case ',' -> {
-                    this.symbCour.setToken(Tokens.VIR_TOKEN);
-                    this.symbCour.setNom(",");
-                }
-                case '(' -> {
-                    this.symbCour.setToken(Tokens.PARG_TOKEN);
-                    this.symbCour.setNom("(");
-                }
-                case ')' -> {
-                    this.symbCour.setToken(Tokens.PARD_TOKEN);
-                    this.symbCour.setNom(")");
-                }
-                case '.' -> {
-                    this.symbCour.setToken(Tokens.PNT_TOKEN);
-                    this.symbCour.setNom(".");
-                }
+                case ';' -> this.symbCour = new Symboles(Tokens.PVIR_TOKEN, ";");
+                case ',' -> this.symbCour = new Symboles(Tokens.VIR_TOKEN, ",");
+                case '(' -> this.symbCour = new Symboles(Tokens.PARG_TOKEN, "(");
+                case ')' -> this.symbCour = new Symboles(Tokens.PARD_TOKEN, ")");
+                case '.' -> this.symbCour = new Symboles(Tokens.PNT_TOKEN, ".");
                 case '!' -> {
                     this.lireCar();
-                    if (this.carCour == '=') {
-                        this.symbCour.setToken(Tokens.DIFF_TOKEN);
-                        this.symbCour.setNom("!=");
-                    }
-                    else {
-                        this.symbCour.setToken(Tokens.ERR_TOKEN);
-                        this.symbCour.setNom(this.carCour + "");
-                    }
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.DIFF_TOKEN, "!=");
+                    else this.symbCour = new Symboles(Tokens.ERR_TOKEN, this.carCour + "");
                 }
                 case ':' -> {
                     this.lireCar();
-                    if (this.carCour == '=') {
-                        this.symbCour.setToken(Tokens.AFFEC_TOKEN);
-                        this.symbCour.setNom(":=");
-                    }
-                    else {
-                        this.symbCour.setToken(Tokens.ERR_TOKEN);
-                        this.symbCour.setNom(this.carCour + "");
-                    }
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.AFFEC_TOKEN, ":=");
+                    else this.symbCour = new Symboles(Tokens.ERR_TOKEN, this.carCour + "");
                 }
-                default -> {
-                    this.symbCour.setToken(Tokens.ERR_TOKEN);
-                    this.symbCour.setNom(this.carCour + "");
-                }
+                default -> this.symbCour = new Symboles(Tokens.ERR_TOKEN, this.carCour + "");
             }
         if (this.symbCour.getToken() == Tokens.ERR_TOKEN) throw new ErreurLexicale(CodesErr.CAR_INC_ERR);
         if (read_next) this.lireCar();
