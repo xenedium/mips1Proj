@@ -71,20 +71,88 @@ public class Scanner {
 
     public void lireCar() {
         try {
-            var rchar = this.fluxSour.read();
-            this.carCour = (char) (rchar == -1 ? EOF : rchar);
+            var rChar = this.fluxSour.read();
+            this.carCour = (char) (rChar == -1 ? EOF : rChar);
         }
         catch (Exception e) {
             this.carCour = (char) EOF;
         }
     }
     public void lireNombre() {
+        StringBuilder input = new StringBuilder();
+
+        while (Character.isDigit(this.carCour)) {
+            input.append(this.carCour);
+            this.lireCar();
+        }
+
+        this.symbCour = new Symboles(Tokens.NUM_TOKEN, input.toString());
+
     }
     public void lireMot() {
+        StringBuilder input = new StringBuilder();
 
+        while (Character.isLetter(this.carCour) || Character.isDigit(this.carCour)) {
+            input.append(this.carCour);
+            this.lireCar();
+        }
+
+        this.symbCour = new Symboles(this.codageLex(input.toString()), input.toString());
     }
-    public void symbSuiv() {
+    public void symbSuiv() throws ErreurLexicale {
+        boolean read_next = true;
+        while (this.carCour == ' ' || this.carCour == '\t' || this.carCour == '\n') this.lireCar();
 
+
+        if (Character.isLetter(this.carCour)) {
+            this.lireMot();
+            read_next = false;
+        }
+        else if (Character.isDigit(this.carCour)) {
+            this.lireNombre();
+            read_next = false;
+        }
+        else switch (this.carCour) {
+                case '+' -> this.symbCour = new Symboles(Tokens.PLUS_TOKEN, "+");
+                case '-' -> this.symbCour = new Symboles(Tokens.MOINS_TOKEN, "-");
+                case '*' -> this.symbCour = new Symboles(Tokens.MUL_TOKEN, "*");
+                case '/' -> this.symbCour = new Symboles(Tokens.DIV_TOKEN, "/");
+                case '<' -> {
+                    this.lireCar();
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.INFEG_TOKEN, "<=");
+                    else {
+                        this.symbCour = new Symboles(Tokens.INF_TOKEN, "<");
+                        read_next = false;
+                    }
+                }
+                case '>' -> {
+                    this.lireCar();
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.SUPEG_TOKEN, ">=");
+                    else {
+                        this.symbCour = new Symboles(Tokens.SUP_TOKEN, ">");
+                        read_next = false;
+                    }
+                }
+                case '=' -> this.symbCour = new Symboles(Tokens.EG_TOKEN, "=");
+                case ';' -> this.symbCour = new Symboles(Tokens.PVIR_TOKEN, ";");
+                case ',' -> this.symbCour = new Symboles(Tokens.VIR_TOKEN, ",");
+                case '(' -> this.symbCour = new Symboles(Tokens.PARG_TOKEN, "(");
+                case ')' -> this.symbCour = new Symboles(Tokens.PARD_TOKEN, ")");
+                case '.' -> this.symbCour = new Symboles(Tokens.PNT_TOKEN, ".");
+                case '!' -> {
+                    this.lireCar();
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.DIFF_TOKEN, "!=");
+                    else this.symbCour = new Symboles(Tokens.ERR_TOKEN, this.carCour + "");
+                }
+                case ':' -> {
+                    this.lireCar();
+                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.AFFEC_TOKEN, ":=");
+                    else this.symbCour = new Symboles(Tokens.ERR_TOKEN, this.carCour + "");
+                }
+                default -> this.symbCour = new Symboles(Tokens.ERR_TOKEN, this.carCour + "");
+            }
+        if (this.symbCour.getToken() == Tokens.ERR_TOKEN) throw new ErreurLexicale(CodesErr.CAR_INC_ERR);
+        if (read_next) this.lireCar();
     }
 
 
