@@ -16,7 +16,17 @@ public enum CodesErr {
 
     READ_ERR("Mot read attendu"),
     PARG_ERR("Symbole ( attendu"),
-    PARD_ERR("Symbole ) attendu");
+    PARD_ERR("Symbole ) attendu"),
+    IF_ERR("Mot if attendu"),
+    INF_ERR("Symbole < attendu"),
+    SUP_ERR("Symbole > attendu"),
+    INFEG_ERR("Symbole <= attendu"),
+    SUPEG_ERR("Symbole >= attendu"),
+    DO_ERR("Mot do attendu"),
+    THEN_ERR("Mot then attendu"),
+    BEGIN_ERR("Mot begin attendu"),
+    END_ERR("Mot end attendu"),
+    DIFF_ERR("Symbole != attendu");
 
 
     private String message;
