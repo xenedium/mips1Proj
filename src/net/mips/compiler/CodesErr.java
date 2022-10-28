@@ -26,7 +26,15 @@ public enum CodesErr {
     THEN_ERR("Mot then attendu"),
     BEGIN_ERR("Mot begin attendu"),
     END_ERR("Mot end attendu"),
-    DIFF_ERR("Symbole != attendu");
+    DIFF_ERR("Symbole != attendu"),
+    VAR_ERR("Mot var attendu"),
+    COND_ERR("Condition attendue"),
+    EXPR_ERR("Expression attendue"),
+    PLUS_ERR("Symbole + attendu"),
+    MOINS_ERR("Symbole - attendu"),
+    MUL_ERR("Symbole * attendu"),
+    DIV_ERR("Symbole / attendu"),
+    VIR_ERR("Symbole , attendu");
 
 
     private String message;
