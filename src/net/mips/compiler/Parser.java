@@ -1,11 +1,4 @@
 package net.mips.compiler;
-// Not fully implemented
-//   /?\
-//   \ /
-// (°) (°)
-//  / ^ \
-//  /\/\/\
-// term | fact
 
 import java.util.Arrays;
 
@@ -24,15 +17,13 @@ public class Parser {
         else throw new ErreurSyntaxique(codeErr);
     }
 
-    public void block() throws ErreurSyntaxique, ErreurLexicale {
+    public void block() throws ErreurSyntaxique, Exception {
         this.consts();
         this.vars();
-        testeAccept(Tokens.BEGIN_TOKEN, CodesErr.BEGIN_ERR);
         this.insts();
-        testeAccept(Tokens.END_TOKEN, CodesErr.END_ERR);
     }
 
-    public void program() throws ErreurSyntaxique, ErreurLexicale {
+    public void program() throws ErreurSyntaxique, Exception {
         testeAccept(Tokens.PROGRAM_TOKEN, CodesErr.PROGRAM_ERR);
         testeAccept(Tokens.ID_TOKEN, CodesErr.ID_ERR);
         testeAccept(Tokens.PVIR_TOKEN, CodesErr.PVIR_ERR);
@@ -40,7 +31,7 @@ public class Parser {
         testeAccept(Tokens.PNT_TOKEN, CodesErr.PNT_ERR);
     }
 
-    public void consts() throws ErreurSyntaxique, ErreurLexicale {
+    public void consts() throws ErreurSyntaxique, Exception {
         if (this.scanner.getSymbCour().getToken() == Tokens.CONST_TOKEN) {
             testeAccept(Tokens.CONST_TOKEN, CodesErr.CONST_ERR);
             do {
@@ -53,7 +44,7 @@ public class Parser {
 
     }
 
-    public void vars() throws ErreurSyntaxique, ErreurLexicale {
+    public void vars() throws ErreurSyntaxique, Exception {
         if (this.scanner.getSymbCour().getToken() == Tokens.VAR_TOKEN) {
             testeAccept(Tokens.VAR_TOKEN, CodesErr.VAR_ERR);
             do {
@@ -66,16 +57,20 @@ public class Parser {
         }
     }
 
-    public void insts() throws ErreurSyntaxique, ErreurLexicale {
+    public void insts() throws ErreurSyntaxique, Exception {
         Tokens[] tokens = {Tokens.ID_TOKEN, Tokens.IF_TOKEN, Tokens.WHILE_TOKEN, Tokens.WRITE_TOKEN, Tokens.READ_TOKEN};
-        do {
-            inst();
+        testeAccept(Tokens.BEGIN_TOKEN, CodesErr.BEGIN_ERR);
+        this.inst();
+        while (this.scanner.getSymbCour().getToken() == Tokens.PVIR_TOKEN){
             testeAccept(Tokens.PVIR_TOKEN, CodesErr.PVIR_ERR);
-        } while (Arrays.asList(tokens).contains(this.scanner.getSymbCour().getToken()));
+            this.inst();
+        }
+        testeAccept(Tokens.END_TOKEN, CodesErr.END_ERR);
     }
 
-    public void inst() throws ErreurSyntaxique, ErreurLexicale {
+    public void inst() throws ErreurSyntaxique, Exception {
         switch (this.scanner.getSymbCour().getToken()) {
+            case BEGIN_TOKEN -> this.insts();
             case ID_TOKEN -> this.affec();
             case READ_TOKEN -> this.lire();
             case WRITE_TOKEN -> this.ecrire();
@@ -84,34 +79,34 @@ public class Parser {
         }
     }
 
-    public void affec() throws ErreurSyntaxique, ErreurLexicale {
+    public void affec() throws ErreurSyntaxique, Exception {
         testeAccept(Tokens.ID_TOKEN, CodesErr.ID_ERR);
         testeAccept(Tokens.AFFEC_TOKEN, CodesErr.AFFEC_ERR);
         this.expr();
     }
 
-    public void si() throws ErreurSyntaxique, ErreurLexicale {
+    public void si() throws ErreurSyntaxique, Exception {
         testeAccept(Tokens.IF_TOKEN, CodesErr.IF_ERR);
         this.cond();
         testeAccept(Tokens.THEN_TOKEN, CodesErr.THEN_ERR);
-        testeAccept(Tokens.BEGIN_TOKEN, CodesErr.BEGIN_ERR);
-        this.insts();
-        testeAccept(Tokens.END_TOKEN, CodesErr.END_ERR);
+        this.inst();
     }
 
-    public void tantque() throws ErreurSyntaxique, ErreurLexicale {
+    public void tantque() throws ErreurSyntaxique, Exception {
         testeAccept(Tokens.WHILE_TOKEN, CodesErr.WHILE_ERR);
         this.cond();
         testeAccept(Tokens.DO_TOKEN, CodesErr.DO_ERR);
-        testeAccept(Tokens.BEGIN_TOKEN, CodesErr.BEGIN_ERR);
-        this.insts();
-        testeAccept(Tokens.END_TOKEN, CodesErr.END_ERR);
+        this.inst();
     }
 
-    public void ecrire() throws ErreurSyntaxique, ErreurLexicale {
+    public void ecrire() throws ErreurSyntaxique, Exception {
         testeAccept(Tokens.WRITE_TOKEN, CodesErr.WRITE_ERR);
         testeAccept(Tokens.PARG_TOKEN, CodesErr.PARG_ERR);
         this.expr();
+        while (this.scanner.getSymbCour().getToken() == Tokens.VIR_TOKEN) {
+            testeAccept(Tokens.VIR_TOKEN, CodesErr.VIR_ERR);
+            this.expr();
+        }
         testeAccept(Tokens.PARD_TOKEN, CodesErr.PARD_ERR);
     }
 
@@ -119,11 +114,52 @@ public class Parser {
         testeAccept(Tokens.READ_TOKEN, CodesErr.READ_ERR);
         testeAccept(Tokens.PARG_TOKEN, CodesErr.PARG_ERR);
         testeAccept(Tokens.ID_TOKEN, CodesErr.ID_ERR);
+        while (this.scanner.getSymbCour().getToken() == Tokens.VIR_TOKEN) {
+            testeAccept(Tokens.VIR_TOKEN, CodesErr.VIR_ERR);
+            testeAccept(Tokens.ID_TOKEN, CodesErr.ID_ERR);
+        }
         testeAccept(Tokens.PARD_TOKEN, CodesErr.PARD_ERR);
     }
 
-    public void cond() throws ErreurSyntaxique, ErreurLexicale {
+    public void cond() throws ErreurSyntaxique, Exception {
         this.expr();
+        this.relop();
+        this.expr();
+    }
+
+    public void expr() throws ErreurSyntaxique, Exception {
+        Tokens[] tokens = {Tokens.PLUS_TOKEN, Tokens.MOINS_TOKEN};
+        this.term();
+        while (Arrays.asList(tokens).contains(this.scanner.getSymbCour().getToken())) {
+            this.addop();
+            this.term();
+        }
+
+    }
+
+    public void term() throws ErreurSyntaxique, Exception {
+        Tokens[] tokens = {Tokens.MUL_TOKEN, Tokens.DIV_TOKEN};
+        this.fact();
+        while (Arrays.asList(tokens).contains(this.scanner.getSymbCour().getToken())) {
+            this.mulop();
+            this.fact();
+        }
+    }
+
+    public void fact() throws ErreurSyntaxique, Exception {
+        switch (this.scanner.getSymbCour().getToken()) {
+            case ID_TOKEN -> testeAccept(Tokens.ID_TOKEN, CodesErr.ID_ERR);
+            case NUM_TOKEN -> testeAccept(Tokens.NUM_TOKEN, CodesErr.NUM_ERR);
+            case PARG_TOKEN -> {
+                testeAccept(Tokens.PARG_TOKEN, CodesErr.PARG_ERR);
+                this.expr();
+                testeAccept(Tokens.PARD_TOKEN, CodesErr.PARD_ERR);
+            }
+            default -> throw new ErreurSyntaxique(CodesErr.CAR_INC_ERR);
+        }
+    }
+
+    public void relop() throws ErreurSyntaxique, Exception {
         switch (this.scanner.getSymbCour().getToken()) {
             case INF_TOKEN -> testeAccept(Tokens.INF_TOKEN, CodesErr.INF_ERR);
             case SUP_TOKEN -> testeAccept(Tokens.SUP_TOKEN, CodesErr.SUP_ERR);
@@ -133,38 +169,20 @@ public class Parser {
             case EG_TOKEN -> testeAccept(Tokens.EG_TOKEN, CodesErr.EG_ERR);
             default -> throw new ErreurSyntaxique(CodesErr.COND_ERR);
         }
-        this.expr();
     }
 
-    public void expr() throws ErreurSyntaxique, ErreurLexicale {
-        if (this.scanner.getSymbCour().getToken() == Tokens.ID_TOKEN)
-            testeAccept(Tokens.ID_TOKEN, CodesErr.ID_ERR);
-        else
-            testeAccept(Tokens.NUM_TOKEN, CodesErr.NUM_ERR);
-
-        Tokens[] tokens = {Tokens.PLUS_TOKEN, Tokens.MOINS_TOKEN, Tokens.MUL_TOKEN, Tokens.DIV_TOKEN};
-
-        while (Arrays.asList(tokens).contains(this.scanner.getSymbCour().getToken())) {
-            switch (this.scanner.getSymbCour().getToken()) {
-                case PLUS_TOKEN -> testeAccept(Tokens.PLUS_TOKEN, CodesErr.PLUS_ERR);
-                case MOINS_TOKEN -> testeAccept(Tokens.MOINS_TOKEN, CodesErr.MOINS_ERR);
-                case MUL_TOKEN -> testeAccept(Tokens.MUL_TOKEN, CodesErr.MUL_ERR);
-                case DIV_TOKEN -> testeAccept(Tokens.DIV_TOKEN, CodesErr.DIV_ERR);
-            }
-            if (this.scanner.getSymbCour().getToken() == Tokens.ID_TOKEN)
-                testeAccept(Tokens.ID_TOKEN, CodesErr.ID_ERR);
-            else
-                testeAccept(Tokens.NUM_TOKEN, CodesErr.NUM_ERR);
-        }
-
+    public void addop() throws ErreurSyntaxique, Exception {
+        if (this.scanner.getSymbCour().getToken() == Tokens.PLUS_TOKEN)
+            testeAccept(Tokens.PLUS_TOKEN, CodesErr.PLUS_ERR);
+        else if (this.scanner.getSymbCour().getToken() == Tokens.MOINS_TOKEN)
+            testeAccept(Tokens.MOINS_TOKEN, CodesErr.MOINS_ERR);
     }
 
-    public void term() throws ErreurSyntaxique, ErreurLexicale {
-
-    }
-
-    public void fact() throws ErreurSyntaxique, ErreurLexicale {
-
+    public void mulop() throws ErreurSyntaxique, Exception {
+        if (this.scanner.getSymbCour().getToken() == Tokens.MUL_TOKEN)
+            testeAccept(Tokens.MUL_TOKEN, CodesErr.MUL_ERR);
+        else if (this.scanner.getSymbCour().getToken() == Tokens.DIV_TOKEN)
+            testeAccept(Tokens.DIV_TOKEN, CodesErr.DIV_ERR);
     }
 
     public Scanner getScanner() {

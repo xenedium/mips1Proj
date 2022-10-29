@@ -120,6 +120,7 @@ public class Scanner {
                 case '<' -> {
                     this.lireCar();
                     if (this.carCour == '=') this.symbCour = new Symboles(Tokens.INFEG_TOKEN, "<=");
+                    else if (this.carCour == '>') this.symbCour = new Symboles(Tokens.DIFF_TOKEN, "<>");
                     else {
                         this.symbCour = new Symboles(Tokens.INF_TOKEN, "<");
                         read_next = false;
@@ -139,11 +140,6 @@ public class Scanner {
                 case '(' -> this.symbCour = new Symboles(Tokens.PARG_TOKEN, "(");
                 case ')' -> this.symbCour = new Symboles(Tokens.PARD_TOKEN, ")");
                 case '.' -> this.symbCour = new Symboles(Tokens.PNT_TOKEN, ".");
-                case '!' -> {
-                    this.lireCar();
-                    if (this.carCour == '=') this.symbCour = new Symboles(Tokens.DIFF_TOKEN, "!=");
-                    else this.symbCour = new Symboles(Tokens.ERR_TOKEN, this.carCour + "");
-                }
                 case ':' -> {
                     this.lireCar();
                     if (this.carCour == '=') this.symbCour = new Symboles(Tokens.AFFEC_TOKEN, ":=");
