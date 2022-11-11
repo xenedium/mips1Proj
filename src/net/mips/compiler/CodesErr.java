@@ -37,7 +37,8 @@ public enum CodesErr {
     VIR_ERR("Symbole , attendu"),
     ID_NON_DEFINI("ID non defini"),
     ID_PROGRAMME_ERR("ID du programme utilise"),
-    ID_CONST_MODIFIED("cant edit a const variable");
+    ID_CONST_MODIFIED("cant edit a const variable"),
+    ID_DEFINED_ERR("ID deja defini");
 
 
     private String message;

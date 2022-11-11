@@ -7,6 +7,8 @@ public class ParserWS extends Parser {
     }
     public void testeInsere(Tokens token, ClasseIdf classe, CodesErr err) throws ErreurCompilation {
         if (token == this.getScanner().getSymbCour().getToken()) {
+            ((ScannerWS)this.getScanner()).chercherSymb();
+            if (((ScannerWS)this.getScanner()).getPlaceSymb() != -1) throw new ErreurSemantique(CodesErr.ID_DEFINED_ERR);
             ((ScannerWS)this.getScanner()).entrerSymb(classe);
             this.getScanner().symbSuiv();
         }
