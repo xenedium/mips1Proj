@@ -11,9 +11,7 @@ public class Scanner {
     private Symboles symbCour;
     private char carCour;
     private FileReader fluxSour;
-
     private final int EOF = 0;
-
 
     public Scanner(String filePath) throws ErreurLexicale {
         try {
@@ -25,7 +23,6 @@ public class Scanner {
         }
         this.motsCles = new ArrayList<>();
     }
-
     public void initMotsCles() {
         this.motsCles.add(
                 new Symboles(Tokens.PROGRAM_TOKEN, "program")
@@ -61,14 +58,12 @@ public class Scanner {
                 new Symboles(Tokens.READ_TOKEN, "read")
         );
     }
-
     public Tokens codageLex(String mot) {
         for (var motCles : this.motsCles) {
             if (Objects.equals(motCles.getNom(), mot)) return motCles.getToken();
         }
         return Tokens.ID_TOKEN;
     }
-
     public void lireCar() {
         try {
             var rChar = this.fluxSour.read();
@@ -150,29 +145,24 @@ public class Scanner {
         if (this.symbCour.getToken() == Tokens.ERR_TOKEN) throw new ErreurLexicale(CodesErr.CAR_INC_ERR);
         if (read_next) this.lireCar();
     }
-
-
     public char getCarCour() {
         return carCour;
     }
     public void setCarCour(char carCour) {
         this.carCour = carCour;
     }
-
     public FileReader getFluxSour() {
         return fluxSour;
     }
     public void setFluxSour(FileReader fluxSour) {
         this.fluxSour = fluxSour;
     }
-
     public ArrayList<Symboles> getMotsCles() {
         return motsCles;
     }
     public void setMotsCles(ArrayList<Symboles> motsCles) {
         this.motsCles = motsCles;
     }
-
     public Symboles getSymbCour() {
         return symbCour;
     }

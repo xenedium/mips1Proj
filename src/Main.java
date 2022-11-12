@@ -1,4 +1,5 @@
 import net.mips.compiler.Parser;
+import net.mips.compiler.ParserWS;
 import net.mips.compiler.Scanner;
 
 import java.nio.file.Path;
@@ -8,7 +9,7 @@ public class Main {
 
         var mips1Source = Path.of(System.getProperty("user.dir"), "prog.mips1");
 
-        var parser = new Parser(mips1Source.toString());
+        var parser = new ParserWS(mips1Source.toString());
 
         parser.getScanner().initMotsCles();
 
