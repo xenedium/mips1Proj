@@ -9,7 +9,7 @@ public class Main {
 
         var mips1Source = Path.of(System.getProperty("user.dir"), "prog.mips1");
 
-        var parser = new ParserWS(mips1Source.toString());
+        var parser = new ParserWS(mips1Source.toString(), System.out);
 
         parser.getScanner().initMotsCles();
 
@@ -17,5 +17,6 @@ public class Main {
         parser.getScanner().symbSuiv();
 
         parser.program();
+        parser.savePcode();
     }
 }

@@ -6,10 +6,12 @@ public class ScannerWS extends Scanner {
 
     private ArrayList<Symboles> tableSymb;
     private int placeSymb;
+    private int offset;
 
     public ScannerWS(String filePath) throws ErreurCompilation {
         super(filePath);
         this.tableSymb = new ArrayList<Symboles>();
+        this.offset = -1;
     }
     public void initMotsCles() {
         super.initMotsCles();
@@ -18,7 +20,10 @@ public class ScannerWS extends Scanner {
         return super.codageLex(mot);
     }
     public void entrerSymb(ClasseIdf classe) {
-        this.tableSymb.add(new Symboles(this.getSymbCour().getToken(), this.getSymbCour().getNom(), classe));
+        var newSymb = new Symboles(this.getSymbCour().getToken(), this.getSymbCour().getNom(), classe);
+        this.tableSymb.add(newSymb);
+        // Note: newSymb is a mutable ref, if the change occurs the change will be applied also in the array
+        if (classe == ClasseIdf.CONSTANTE || classe == ClasseIdf.VARIABLE) newSymb.setAdresse(++offset);
     }
     public void chercherSymb() {
         for (var i=0;i < this.tableSymb.size(); i++) {
@@ -31,11 +36,16 @@ public class ScannerWS extends Scanner {
         }
         this.placeSymb = -1;
     }
-
     public int getPlaceSymb() {
         return placeSymb;
     }
     public ArrayList<Symboles> getTableSymb() {
         return this.tableSymb;
+    }
+    public int getOffset() {
+        return offset;
+    }
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 }

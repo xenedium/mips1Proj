@@ -4,6 +4,7 @@ public class Symboles {
     private Tokens token;
     private String nom;
     private ClasseIdf classe;
+    private int adresse;
 
     public Symboles(Tokens token, String nom) {
         this(token, nom, null);
@@ -12,6 +13,7 @@ public class Symboles {
         this.token = token;
         this.nom = nom;
         this.classe = classe;
+        this.adresse = -1;
     }
 
 
@@ -32,5 +34,11 @@ public class Symboles {
     }
     public void setClasse(ClasseIdf classe) {
         this.classe = classe;
+    }
+    public int getAdresse() {
+        return adresse;
+    }
+    public void setAdresse(int adresse) {
+        this.adresse = adresse;
     }
 }

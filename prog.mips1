@@ -1,6 +1,9 @@
 program test;
 const tata=12;
-var x;
+var x, z;
 begin
-    write(tata);
+    read(x);
+    z := x + tata;
+    write(z);
+    write(tata)
 end.
