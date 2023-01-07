@@ -20,5 +20,6 @@ public enum Mnemonique {
     STO,
     BRN,
     BZE,
-    HLT
+    HLT,
+    NUM
 }

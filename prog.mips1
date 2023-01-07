@@ -1,5 +1,5 @@
 program test;
-const tata=12;
+const tata=13;
 var x, z;
 begin
     read(x);
