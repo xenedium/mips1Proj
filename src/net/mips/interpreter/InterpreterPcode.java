@@ -118,6 +118,7 @@ public class InterpreterPcode {
             case INN -> {
                 var sc = new Scanner(System.in);
                 adr = this.pile[sp--];
+                System.out.print("Entrer une valeur : ");
                 pile[adr] = sc.nextInt();
                 this.pc++;
             }
