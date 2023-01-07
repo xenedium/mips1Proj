@@ -139,7 +139,7 @@ public class ParserWS extends Parser {
             // RULE 4
             if (this.getScanner().getTableSymb().get(this.getScanner().getPlaceSymb()).getClasse() == ClasseIdf.CONSTANTE) throw new ErreurSemantique(CodesErr.ID_CONST_MODIFIED);
             generer2(Mnemonique.LDA, this.getScanner().getTableSymb().get(this.getScanner().getPlaceSymb()).getAdresse());
-            generer1(Mnemonique.STO);
+            generer1(Mnemonique.INN);
         }
         testeAccept(Tokens.PARD_TOKEN, CodesErr.PARD_ERR);
     }

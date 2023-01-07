@@ -96,7 +96,7 @@ public class Scanner {
     }
     public void symbSuiv() throws ErreurLexicale {
         boolean read_next = true;
-        while (this.carCour == ' ' || this.carCour == '\t' || this.carCour == '\n') this.lireCar();
+        while (Character.isWhitespace(this.carCour)) this.lireCar();
 
 
         if (Character.isLetter(this.carCour)) {
